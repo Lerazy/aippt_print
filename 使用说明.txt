@@ -1,0 +1,37 @@
+# 快速使用指南
+
+## 第一次使用
+
+1. 打开终端，进入项目目录
+2. 激活虚拟环境：
+   ```bash
+   source venv/bin/activate
+   ```
+
+3. 运行脚本：
+   ```bash
+   python aippt_to_pdf.py https://www.aippt.cn/share/你的PPT链接
+   ```
+
+## 示例
+
+```bash
+# 激活环境
+source venv/bin/activate
+
+# 转换PPT为PDF
+python aippt_to_pdf.py https://www.aippt.cn/share/2fxIYpUY1wc83C46fUrYzA
+```
+
+## 输出
+
+- PDF文件将自动保存到：`/Users/leiyang/Desktop/new/pdf/`
+- 文件名包含时间戳，避免重复
+- 文件大小约3-5MB
+
+## 注意事项
+
+- 确保网络连接正常
+- PPT链接必须是有效的aippt.cn分享链接
+- 首次使用需要安装依赖（已完成）
+- PDF文件会自动保存到指定文件夹

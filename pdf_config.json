@@ -1,0 +1,157 @@
+{
+  "pdf_configs": {
+    "default": {
+      "name": "默认配置",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pdf_format": "A4",
+      "landscape": true,
+      "scale": 1.0,
+      "margin": {
+        "top": "0",
+        "right": "0",
+        "bottom": "0",
+        "left": "0"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    },
+    "landscape": {
+      "name": "横屏模式",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pdf_format": "A4",
+      "landscape": true,
+      "scale": 0.8,
+      "margin": {
+        "top": "0.5cm",
+        "right": "0.5cm",
+        "bottom": "0.5cm",
+        "left": "0.5cm"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    },
+    "large": {
+      "name": "大尺寸模式",
+      "viewport": {
+        "width": 2560,
+        "height": 1440
+      },
+      "pdf_format": "A3",
+      "landscape": true,
+      "scale": 1.0,
+      "margin": {
+        "top": "1cm",
+        "right": "1cm",
+        "bottom": "1cm",
+        "left": "1cm"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    },
+    "compact": {
+      "name": "紧凑模式",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "pdf_format": "A4",
+      "landscape": false,
+      "scale": 0.7,
+      "margin": {
+        "top": "0.3cm",
+        "right": "0.3cm",
+        "bottom": "0.3cm",
+        "left": "0.3cm"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    },
+    "presentation": {
+      "name": "演示模式",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pdf_format": "A4",
+      "landscape": true,
+      "scale": 0.9,
+      "margin": {
+        "top": "0.8cm",
+        "right": "0.8cm",
+        "bottom": "0.8cm",
+        "left": "0.8cm"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    },
+    "print": {
+      "name": "打印优化",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pdf_format": "A4",
+      "landscape": false,
+      "scale": 0.85,
+      "margin": {
+        "top": "1.5cm",
+        "right": "1cm",
+        "bottom": "1.5cm",
+        "left": "1cm"
+      },
+      "print_background": true,
+      "display_header_footer": true,
+      "prefer_css_page_size": true
+    }
+  },
+  "preprocess_settings": {
+    "enable_preprocess": true,
+    "steps": {
+      "remove_sidebar": {
+        "enabled": true,
+        "selector": ".main-preview-aside",
+        "wait_after": 2000
+      },
+      "adjust_zoom": {
+        "enabled": true,
+        "zoom_out_target": 10,
+        "zoom_in_target": 170,
+        "click_delay": 800,
+        "wait_after_target": 2000
+      },
+      "remove_toolbar": {
+        "enabled": true,
+        "selector": ".sharepreview-toolkit",
+        "wait_after": 2000
+      }
+    }
+  },
+  "browser_settings": {
+    "headless": false,
+    "viewport_timeout": 1000,
+    "page_load_timeout": 5000,
+    "preprocess_timeout": 2000
+  },
+  "output_settings": {
+    "output_dir": "/Users/leiyang/Desktop/new/pdf",
+    "filename_template": "aippt_ppt_{config}_{timestamp}_page_{page}.pdf",
+    "timestamp_format": "%Y%m%d_%H%M%S"
+  },
+  "debug_settings": {
+    "verbose_logging": true,
+    "show_browser_window": true,
+    "save_screenshots": false,
+    "screenshot_dir": "./screenshots"
+  }
+}
