@@ -132,15 +132,13 @@ async def preprocess_page(page, config_manager):
                     current_scale_text = await scale_display.text_content()
                     current_scale = int(re.findall(r'\d+', current_scale_text)[0])
                     
-                    print(f"当前缩放: {current_scale}%")
-                    
                     if current_scale <= zoom_out_target:
                         print(f"✅ 缩放已调整到{zoom_out_target}%或以下")
                         await page.wait_for_timeout(wait_after_target)
                         break
                     
                     await zoom_out_btn.click()
-                    await page.wait_for_timeout(click_delay)
+                    await page.wait_for_timeout(200)  # 减少等待时间
                     attempts += 1
                 
                 # 再放大到目标值
@@ -150,15 +148,13 @@ async def preprocess_page(page, config_manager):
                     current_scale_text = await scale_display.text_content()
                     current_scale = int(re.findall(r'\d+', current_scale_text)[0])
                     
-                    print(f"当前缩放: {current_scale}%")
-                    
                     if current_scale >= zoom_in_target:
                         print(f"✅ 缩放已调整到{zoom_in_target}%")
                         await page.wait_for_timeout(wait_after_target)
                         break
                     
                     await zoom_in_btn.click()
-                    await page.wait_for_timeout(click_delay)
+                    await page.wait_for_timeout(200)  # 减少等待时间
                     attempts += 1
                     
             else:
@@ -216,7 +212,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
     
     async with async_playwright() as p:
         # 启动浏览器
-        headless = browser_settings.get("headless", False)
+        headless = browser_settings.get("headless", True)
         browser = await p.chromium.launch(headless=headless)
         page = await browser.new_page()
         
