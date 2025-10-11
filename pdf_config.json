@@ -6,7 +6,7 @@
         "width": 1920,
         "height": 1080
       },
-      "pdf_format": "A4",
+      "pdf_format": "A3",
       "landscape": true,
       "scale": 1.0,
       "margin": {
@@ -126,8 +126,8 @@
       "adjust_zoom": {
         "enabled": true,
         "zoom_out_target": 10,
-        "zoom_in_target": 170,
-        "click_delay": 800,
+        "zoom_in_target": 180,
+        "click_delay": 500,
         "wait_after_target": 2000
       },
       "remove_toolbar": {
@@ -146,17 +146,17 @@
   "crop_settings": {
     "enabled": true,
     "crop_margins": {
-      "top": 49,
-      "right": 10,
-      "bottom": 89,
-      "left": 68
+      "top": 45,
+      "right": 40,
+      "bottom": 182,
+      "left": 55
     },
     "crop_units": "px",
     "description": "裁剪PDF页面边距，单位：像素。top: 上边距, right: 右边距, bottom: 下边距, left: 左边距"
   },
   "output_settings": {
     "output_dir": "/Users/leiyang/Desktop/new/pdf",
-    "filename_template": "aippt_ppt_{config}_{timestamp}_page_{page}.pdf",
+    "filename_template": "{title}_{config}_{timestamp}_page_{page}.pdf",
     "timestamp_format": "%Y%m%d_%H%M%S"
   },
   "debug_settings": {

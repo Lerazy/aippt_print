@@ -240,8 +240,8 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
     timestamp_format = output_settings.get("timestamp_format", "%Y%m%d_%H%M%S")
     timestamp = datetime.now().strftime(timestamp_format)
     
-    # 修改文件名模板，支持多页
-    filename_template = output_settings.get("filename_template", "aippt_ppt_{config}_{timestamp}_page_{page}.pdf")
+    # 修改文件名模板，支持多页和自定义标题
+    filename_template = output_settings.get("filename_template", "{title}_{config}_{timestamp}_page_{page}.pdf")
     print(f"📝 文件名模板: {filename_template}")
     
     async with async_playwright() as p:
@@ -262,9 +262,22 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         page_load_timeout = browser_settings.get("page_load_timeout", 5000)
         await page.wait_for_timeout(page_load_timeout)
         
-        # 获取页面标题
-        title = await page.title()
-        print(f"页面标题: {title}")
+        # 获取PPT标题
+        try:
+            title_element = await page.query_selector('.sharepreview-header-workname-text')
+            if title_element:
+                title = await title_element.inner_text()
+                print(f"PPT标题: {title}")
+            else:
+                title = await page.title()
+                print(f"使用页面标题: {title}")
+        except Exception as e:
+            title = await page.title()
+            print(f"获取PPT标题失败，使用页面标题: {title}")
+        
+        # 清理标题，移除不适合文件名的字符
+        clean_title = re.sub(r'[<>:"/\\|?*]', '_', title)
+        clean_title = clean_title.strip()
         
         # 立即查找幻灯片列表（在预处理之前）
         print("🔍 正在查找幻灯片列表...")
@@ -312,7 +325,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         # 根据检测结果生成PDF
         if not is_multi_page:
             # 生成单页PDF
-            filename = filename_template.format(config=config_name, timestamp=timestamp, page="all")
+            filename = filename_template.format(title=clean_title, config=config_name, timestamp=timestamp, page="all")
             output_path = os.path.join(output_dir, filename)
             
             # 应用缩放（通过CSS）
@@ -364,7 +377,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                     """)
                 
                 # 生成当前页的PDF
-                filename = filename_template.format(config=config_name, timestamp=timestamp, page=page_num)
+                filename = filename_template.format(title=clean_title, config=config_name, timestamp=timestamp, page=page_num)
                 output_path = os.path.join(output_dir, filename)
                 print(f"📄 生成文件: {filename}")
                 
@@ -412,7 +425,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
             # 合并所有PDF页面
             if len(generated_files) > 1:
                 print(f"\n📚 正在合并 {len(generated_files)} 页PDF...")
-                merged_filename = f"aippt_ppt_{config_name}_{timestamp}_merged.pdf"
+                merged_filename = f"{clean_title}_{config_name}_{timestamp}_merged.pdf"
                 merged_path = os.path.join(output_dir, merged_filename)
                 
                 merger = PdfMerger()
