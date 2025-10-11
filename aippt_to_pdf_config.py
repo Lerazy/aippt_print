@@ -13,6 +13,40 @@ from playwright.async_api import async_playwright
 from datetime import datetime
 import re
 from PyPDF2 import PdfMerger
+from pypdf import PdfReader, PdfWriter
+
+def crop_pdf_page(input_path, output_path, crop_margins):
+    """
+    裁剪PDF页面
+    crop_margins: {"top": 0, "right": 0, "bottom": 0, "left": 0}
+    """
+    try:
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+        
+        for page in reader.pages:
+            # 获取页面尺寸
+            page_width = float(page.mediabox.width)
+            page_height = float(page.mediabox.height)
+            
+            # 计算裁剪后的尺寸
+            new_width = page_width - crop_margins["left"] - crop_margins["right"]
+            new_height = page_height - crop_margins["top"] - crop_margins["bottom"]
+            
+            # 设置新的页面尺寸
+            page.mediabox.lower_left = (crop_margins["left"], crop_margins["bottom"])
+            page.mediabox.upper_right = (page_width - crop_margins["right"], page_height - crop_margins["top"])
+            
+            writer.add_page(page)
+        
+        # 保存裁剪后的PDF
+        with open(output_path, 'wb') as output_file:
+            writer.write(output_file)
+        
+        return True
+    except Exception as e:
+        print(f"❌ PDF裁剪失败: {e}")
+        return False
 
 class PDFConfigManager:
     """PDF配置管理器"""
@@ -348,6 +382,21 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                 
                 await page.pdf(**pdf_options)
                 print(f"✅ 第 {page_num} 页PDF已生成: {output_path}")
+                
+                # 应用PDF裁剪
+                crop_settings = config_manager.config.get("crop_settings", {})
+                if crop_settings.get("enabled", False):
+                    crop_margins = crop_settings.get("crop_margins", {"top": 0, "right": 0, "bottom": 0, "left": 0})
+                    if any(crop_margins.values()):  # 如果有任何边距不为0
+                        cropped_path = output_path.replace('.pdf', '_cropped.pdf')
+                        if crop_pdf_page(output_path, cropped_path, crop_margins):
+                            # 删除原文件，使用裁剪后的文件
+                            os.remove(output_path)
+                            os.rename(cropped_path, output_path)
+                            print(f"✂️ 第 {page_num} 页PDF已裁剪")
+                        else:
+                            print(f"⚠️ 第 {page_num} 页PDF裁剪失败，使用原文件")
+                
                 generated_files.append(output_path)
                 
                 # 如果不是最后一页，按键盘下键切换到下一张

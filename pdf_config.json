@@ -143,6 +143,17 @@
     "page_load_timeout": 5000,
     "preprocess_timeout": 2000
   },
+  "crop_settings": {
+    "enabled": true,
+    "crop_margins": {
+      "top": 49,
+      "right": 10,
+      "bottom": 89,
+      "left": 68
+    },
+    "crop_units": "px",
+    "description": "裁剪PDF页面边距，单位：像素。top: 上边距, right: 右边距, bottom: 下边距, left: 左边距"
+  },
   "output_settings": {
     "output_dir": "/Users/leiyang/Desktop/new/pdf",
     "filename_template": "aippt_ppt_{config}_{timestamp}_page_{page}.pdf",
