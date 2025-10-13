@@ -241,7 +241,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
     timestamp = datetime.now().strftime(timestamp_format)
     
     # 修改文件名模板，支持多页和自定义标题
-    filename_template = output_settings.get("filename_template", "{title}_{config}_{timestamp}_page_{page}.pdf")
+    filename_template = output_settings.get("filename_template", "{title}.pdf")
     print(f"📝 文件名模板: {filename_template}")
     
     async with async_playwright() as p:
@@ -325,7 +325,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         # 根据检测结果生成PDF
         if not is_multi_page:
             # 生成单页PDF
-            filename = filename_template.format(title=clean_title, config=config_name, timestamp=timestamp, page="all")
+            filename = filename_template.format(title=clean_title)
             output_path = os.path.join(output_dir, filename)
             
             # 应用缩放（通过CSS）
@@ -377,7 +377,12 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                     """)
                 
                 # 生成当前页的PDF
-                filename = filename_template.format(title=clean_title, config=config_name, timestamp=timestamp, page=page_num)
+                if total_slides > 1:
+                    # 多页时添加页面编号
+                    filename = f"{clean_title}_第{page_num}页.pdf"
+                else:
+                    # 单页时直接使用标题
+                    filename = filename_template.format(title=clean_title)
                 output_path = os.path.join(output_dir, filename)
                 print(f"📄 生成文件: {filename}")
                 
@@ -425,7 +430,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
             # 合并所有PDF页面
             if len(generated_files) > 1:
                 print(f"\n📚 正在合并 {len(generated_files)} 页PDF...")
-                merged_filename = f"{clean_title}_{config_name}_{timestamp}_merged.pdf"
+                merged_filename = f"{clean_title}.pdf"
                 merged_path = os.path.join(output_dir, merged_filename)
                 
                 merger = PdfMerger()

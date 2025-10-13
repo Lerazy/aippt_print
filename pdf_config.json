@@ -156,7 +156,7 @@
   },
   "output_settings": {
     "output_dir": "/Users/leiyang/Desktop/new/pdf",
-    "filename_template": "{title}_{config}_{timestamp}_page_{page}.pdf",
+    "filename_template": "{title}.pdf",
     "timestamp_format": "%Y%m%d_%H%M%S"
   },
   "debug_settings": {
