@@ -172,7 +172,7 @@ async def preprocess_page(page, config_manager):
                         break
                     
                     await zoom_out_btn.click()
-                    await page.wait_for_timeout(200)  # 减少等待时间
+                    await page.wait_for_timeout(100)  # 进一步减少等待时间
                     attempts += 1
                 
                 # 再放大到目标值
@@ -188,7 +188,7 @@ async def preprocess_page(page, config_manager):
                         break
                     
                     await zoom_in_btn.click()
-                    await page.wait_for_timeout(200)  # 减少等待时间
+                    await page.wait_for_timeout(100)  # 进一步减少等待时间
                     attempts += 1
                     
             else:
@@ -255,14 +255,10 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         
         print(f"正在访问: {url}")
         
-        # 访问页面 - 直接使用基础加载模式
-        print(f"🌐 使用基础加载模式...")
+        # 访问页面 - 优化加载速度
+        print(f"🌐 正在加载页面...")
         await page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        await page.wait_for_timeout(3000)
-        
-        # 等待页面完全加载
-        page_load_timeout = browser_settings.get("page_load_timeout", 5000)
-        await page.wait_for_timeout(page_load_timeout)
+        await page.wait_for_timeout(2000)  # 减少等待时间
         
         # 获取PPT标题
         try:
@@ -307,22 +303,14 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                 print(f"✅ 找到 {len(slide_buttons)} 个幻灯片按钮，将逐页生成PDF")
                 is_multi_page = True
                 
-            # 保存幻灯片按钮的文本内容，用于后续查找
-            slide_button_texts = []
-            for i, btn in enumerate(slide_buttons):
-                try:
-                    text = await btn.text_content()
-                    slide_button_texts.append(text.strip() if text else str(i+1))
-                except:
-                    slide_button_texts.append(str(i+1))
-            print(f"📝 保存幻灯片按钮文本: {slide_button_texts}")
+            # 简化幻灯片按钮处理，直接使用序号
+            print(f"📝 检测到 {total_slides} 页幻灯片")
         
         # 预处理页面
         await preprocess_page(page, config_manager)
         
-        # 等待预处理完成
-        preprocess_timeout = browser_settings.get("preprocess_timeout", 2000)
-        await page.wait_for_timeout(preprocess_timeout)
+        # 等待预处理完成 - 减少等待时间
+        await page.wait_for_timeout(1000)
         
         # 根据检测结果生成PDF
         if not is_multi_page:
@@ -423,7 +411,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                 if page_num < total_slides:
                     print(f"⬇️ 按键盘下键切换到第 {page_num + 1} 页...")
                     await page.keyboard.press('ArrowDown')
-                    await page.wait_for_timeout(1000)  # 等待页面切换
+                    await page.wait_for_timeout(500)  # 减少页面切换等待时间
             
             print(f"\n🎉 共生成 {len(generated_files)} 页PDF")
             for i, file_path in enumerate(generated_files, 1):

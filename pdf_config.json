@@ -148,7 +148,7 @@
     "crop_margins": {
       "top": 45,
       "right": 40,
-      "bottom": 182,
+      "bottom": 183,
       "left": 55
     },
     "crop_units": "px",
