@@ -255,8 +255,10 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         
         print(f"正在访问: {url}")
         
-        # 访问页面
-        await page.goto(url, wait_until="networkidle")
+        # 访问页面 - 直接使用基础加载模式
+        print(f"🌐 使用基础加载模式...")
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        await page.wait_for_timeout(3000)
         
         # 等待页面完全加载
         page_load_timeout = browser_settings.get("page_load_timeout", 5000)
