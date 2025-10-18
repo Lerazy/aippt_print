@@ -1,4 +1,6 @@
 #!/bin/bash
+# 关闭通配符展开，确保包含 ? & 等的URL可直接使用而无需引号
+set -f
 # aippt.cn PPT转PDF工具 - 快速使用脚本
 # 使用方法: ./quick_convert.sh <PPT链接> [配置名称]
 
@@ -16,7 +18,7 @@ if [ $# -lt 1 ]; then
     echo ""
     echo "示例:"
     echo "  $0 https://www.aippt.cn/share/xxx landscape"
-    echo "  $0 https://www.aippt.cn/share/xxx presentation"
+    echo "  $0 https://www.aippt.cn/share/xxx?share_mode=link presentation"
     exit 1
 fi
 
@@ -45,7 +47,7 @@ echo "⚙️  配置: $CONFIG"
 echo ""
 
 source venv/bin/activate
-python aippt_to_pdf_preprocess.py "$PPT_URL" "$CONFIG"
+python aippt_to_pdf_config.py "$PPT_URL" "$CONFIG"
 
 echo ""
 echo "✅ 转换完成！PDF文件已保存到: /Users/leiyang/Desktop/new/pdf/"

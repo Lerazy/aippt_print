@@ -282,11 +282,19 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         
         slide_list = await page.query_selector('.slide-list-root')
         if not slide_list:
-            print("⚠️  未找到幻灯片列表，将生成单页PDF")
-            total_slides = 1
-            is_multi_page = False
-            slide_buttons = []
-        else:
+            print("⚠️  未找到幻灯片列表，等待2秒后重新查找...")
+            await page.wait_for_timeout(2000)
+            slide_list = await page.query_selector('.slide-list-root')
+            if not slide_list:
+                print("⚠️  重新查找后仍未找到幻灯片列表，将生成单页PDF")
+                total_slides = 1
+                is_multi_page = False
+                slide_buttons = []
+            else:
+                print("✅ 重新查找后找到幻灯片列表")
+        
+        # 如果找到了幻灯片列表，处理多页逻辑
+        if slide_list:
             # 获取幻灯片数量并保存
             slide_items = await slide_list.query_selector_all('> *')
             total_slides = len(slide_items)
@@ -309,8 +317,8 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
         # 预处理页面
         await preprocess_page(page, config_manager)
         
-        # 等待预处理完成 - 减少等待时间
-        await page.wait_for_timeout(1000)
+        # 等待预处理完成 - 增加到2秒，确保第一页资源渲染完成
+        await page.wait_for_timeout(2000)
         
         # 根据检测结果生成PDF
         if not is_multi_page:
@@ -411,7 +419,7 @@ async def generate_pdf_from_aippt(url, config_manager, config_name="default"):
                 if page_num < total_slides:
                     print(f"⬇️ 按键盘下键切换到第 {page_num + 1} 页...")
                     await page.keyboard.press('ArrowDown')
-                    await page.wait_for_timeout(500)  # 减少页面切换等待时间
+                    await page.wait_for_timeout(500)  # 页面切换等待时间调整为500ms
             
             print(f"\n🎉 共生成 {len(generated_files)} 页PDF")
             for i, file_path in enumerate(generated_files, 1):
